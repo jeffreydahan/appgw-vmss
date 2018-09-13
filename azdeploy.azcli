@@ -1,0 +1,57 @@
+az login
+
+
+# Set Service Name, VMSS Name and Region for deployment
+svcname="PAppWall"  # Prod, App Wallet, West Europe
+vmssname=$svcname"1"
+azreg="westeurope"
+
+# Network Variables (assumes vnet pre-created)
+vnet="/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/storage/providers/Microsoft.Network/virtualNetworks/vnet1/"
+subnetappgw="/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/storage/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/appgw"
+subnetvmss="/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/storage/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/vmss"
+
+# Resource Tags 
+Deployment="Prod"
+Version="1.0.0.1"
+BlueGreen="Green"
+
+
+
+# Create Resource Group to contain all service components for the region
+az group create --name $svcname --location $azreg
+
+# Create application gateway
+az group deployment create --resource-group $svcname --template-file appgw.json --parameters appgw.parameters.json --parameters '{"location":{"value":"'$azreg'"}, "subnetID":{"value":"'$subnetappgw'"}, "ServiceName":{"value":"'$svcname'"}, "Deployment":{"value":"'$Deployment'"}, "Version":{"value":"'$Version'"},"BlueGreen":{"value":"'$BlueGreen'"}}'
+
+az group deployment create --resource-group vmss201 --template-file azuredeploy.json --parameters azuredeploy.parameters.json --parameters '{"vmssName":{"value":"vmss201"},"ServiceName":{"value":"appwallet"},"Deployment":{"value":"Prod"},"Version":{"value":"1.0.0.0"},"BlueGreen":{"value":"Blue"},"subnetId":{"value":"/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/reg1appgw/providers/Microsoft.Network/virtualNetworks/reg1vnet1/subnets/vmssa"}}'
+
+
+az network application-gateway address-pool update --resource-group reg1appgw --gateway-name reg1pubappgw --name appGatewayBackendPool --servers 10.0.1.4
+
+# Obtain Name, IP address and Resource Group of BLUE Load Balancer
+blue=($(az network lb list -o table --query "[? tags.BlueGreen == 'Blue' && tags.ServiceName == 'appwallet' && tags.Deployment == 'Prod'].{name:name, rg:resourceGroup, ip:frontendIpConfigurations[0].privateIpAddress}" -o tsv))
+bluelb=${blue[0]}
+bluerg=${blue[1]}
+blueIP=${blue[2]}
+echo LB name: $bluelb
+echo RG name: $bluerg
+echo IP addr: $blueIP
+
+# Obtain Name, IP address and Resource Group of GREEN Load Balancer
+green=$(az network application-gateway list --query "[].backendAddressPools[].backendAddresses[].ipAddress" --output tsv)
+echo $greenIP
+
+# Update application gateway to use IP address of BLUE load balancer
+# Swap BLUE and GREEN tags on load balancers
+az network application-gateway address-pool update --resource-group reg1appgw --gateway-name reg1pubappgw --name appGatewayBackendPool --servers $blueIP
+
+az network lb update
+
+green=$(az network application-gateway list --query "[].backendAddressPools[].backendAddresses[].ipAddress" --output tsv)
+echo $green
+
+
+
+
+az network lb list -o table --query "[? tags.BlueGreen == 'Blue' && tags.ServiceName == 'appwallet' && tags.Deployment == 'Prod' ]" --output json > output.json

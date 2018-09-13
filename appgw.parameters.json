@@ -1,0 +1,42 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "westeurope"
+        },
+        "tier": {
+            "value": "Standard"
+        },
+        "skuSize": {
+            "value": "Standard_Small"
+        },
+        "capacity": {
+            "value": 2
+        },
+        "frontEndPort": {
+            "value": 80
+        },
+        "subnetID": {
+            "value": "none"
+        },
+        "enableHttp2": {
+            "value": false
+        },
+        "idleTimeoutInMinutes": {
+            "value": 4
+        },
+        "ServiceName": {
+            "value": "length of 9"
+        },
+        "Deployment": {
+            "value": "prod dev test"
+        },
+        "Version": {
+            "value": "x.y.z"
+        },
+        "BlueGreen": {
+            "value": "blue or green"
+        }
+    }
+}

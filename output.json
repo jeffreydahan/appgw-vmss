@@ -1,0 +1,166 @@
+[
+  {
+    "additionalProperties": {},
+    "backendAddressPools": [
+      {
+        "additionalProperties": {
+          "type": "Microsoft.Network/loadBalancers/backendAddressPools"
+        },
+        "backendIpConfigurations": [
+          {
+            "additionalProperties": {},
+            "applicationGatewayBackendAddressPools": null,
+            "applicationSecurityGroups": null,
+            "etag": null,
+            "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/vmss102/providers/Microsoft.Compute/virtualMachineScaleSets/vmss102/virtualMachines/0/networkInterfaces/nic/ipConfigurations/ipconfig",
+            "loadBalancerBackendAddressPools": null,
+            "loadBalancerInboundNatRules": null,
+            "name": null,
+            "primary": null,
+            "privateIpAddress": null,
+            "privateIpAddressVersion": null,
+            "privateIpAllocationMethod": null,
+            "provisioningState": null,
+            "publicIpAddress": null,
+            "resourceGroup": "vmss102",
+            "subnet": null
+          }
+        ],
+        "etag": "W/\"d7d60f0e-f3fd-4950-a31d-1e46dcf35212\"",
+        "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/vmss102/providers/Microsoft.Network/loadBalancers/vmss102rhilb/backendAddressPools/vmss102rhbepool",
+        "loadBalancingRules": [
+          {
+            "additionalProperties": {},
+            "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/vmss102/providers/Microsoft.Network/loadBalancers/vmss102rhilb/loadBalancingRules/lbrule",
+            "resourceGroup": "vmss102"
+          }
+        ],
+        "name": "vmss102rhbepool",
+        "outboundNatRule": null,
+        "provisioningState": "Succeeded",
+        "resourceGroup": "vmss102"
+      }
+    ],
+    "etag": "W/\"d7d60f0e-f3fd-4950-a31d-1e46dcf35212\"",
+    "frontendIpConfigurations": [
+      {
+        "additionalProperties": {
+          "type": "Microsoft.Network/loadBalancers/frontendIPConfigurations"
+        },
+        "etag": "W/\"d7d60f0e-f3fd-4950-a31d-1e46dcf35212\"",
+        "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/vmss102/providers/Microsoft.Network/loadBalancers/vmss102rhilb/frontendIPConfigurations/LoadBalancerFrontEnd",
+        "inboundNatPools": null,
+        "inboundNatRules": null,
+        "loadBalancingRules": [
+          {
+            "additionalProperties": {},
+            "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/vmss102/providers/Microsoft.Network/loadBalancers/vmss102rhilb/loadBalancingRules/lbrule",
+            "resourceGroup": "vmss102"
+          }
+        ],
+        "name": "LoadBalancerFrontEnd",
+        "outboundNatRules": null,
+        "privateIpAddress": "10.0.2.4",
+        "privateIpAllocationMethod": "Dynamic",
+        "provisioningState": "Succeeded",
+        "publicIpAddress": null,
+        "resourceGroup": "vmss102",
+        "subnet": {
+          "additionalProperties": {},
+          "addressPrefix": null,
+          "etag": null,
+          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/reg1appgw/providers/Microsoft.Network/virtualNetworks/reg1vnet1/subnets/vmssb",
+          "ipConfigurations": null,
+          "name": null,
+          "networkSecurityGroup": null,
+          "provisioningState": null,
+          "resourceGroup": "reg1appgw",
+          "resourceNavigationLinks": null,
+          "routeTable": null,
+          "serviceEndpoints": null
+        },
+        "zones": null
+      }
+    ],
+    "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/vmss102/providers/Microsoft.Network/loadBalancers/vmss102rhilb",
+    "inboundNatPools": [],
+    "inboundNatRules": [],
+    "loadBalancingRules": [
+      {
+        "additionalProperties": {
+          "type": "Microsoft.Network/loadBalancers/loadBalancingRules"
+        },
+        "backendAddressPool": {
+          "additionalProperties": {},
+          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/vmss102/providers/Microsoft.Network/loadBalancers/vmss102rhilb/backendAddressPools/vmss102rhbepool",
+          "resourceGroup": "vmss102"
+        },
+        "backendPort": 80,
+        "disableOutboundSnat": null,
+        "enableFloatingIp": false,
+        "etag": "W/\"d7d60f0e-f3fd-4950-a31d-1e46dcf35212\"",
+        "frontendIpConfiguration": {
+          "additionalProperties": {},
+          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/vmss102/providers/Microsoft.Network/loadBalancers/vmss102rhilb/frontendIPConfigurations/LoadBalancerFrontEnd",
+          "resourceGroup": "vmss102"
+        },
+        "frontendPort": 80,
+        "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/vmss102/providers/Microsoft.Network/loadBalancers/vmss102rhilb/loadBalancingRules/lbrule",
+        "idleTimeoutInMinutes": 15,
+        "loadDistribution": "Default",
+        "name": "lbrule",
+        "probe": {
+          "additionalProperties": {},
+          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/vmss102/providers/Microsoft.Network/loadBalancers/vmss102rhilb/probes/lbprobe",
+          "resourceGroup": "vmss102"
+        },
+        "protocol": "Tcp",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "vmss102"
+      }
+    ],
+    "location": "westeurope",
+    "name": "vmss102rhilb",
+    "outboundNatRules": null,
+    "probes": [
+      {
+        "additionalProperties": {
+          "type": "Microsoft.Network/loadBalancers/probes"
+        },
+        "etag": "W/\"d7d60f0e-f3fd-4950-a31d-1e46dcf35212\"",
+        "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/vmss102/providers/Microsoft.Network/loadBalancers/vmss102rhilb/probes/lbprobe",
+        "intervalInSeconds": 15,
+        "loadBalancingRules": [
+          {
+            "additionalProperties": {},
+            "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/vmss102/providers/Microsoft.Network/loadBalancers/vmss102rhilb/loadBalancingRules/lbrule",
+            "resourceGroup": "vmss102"
+          }
+        ],
+        "name": "lbprobe",
+        "numberOfProbes": 2,
+        "port": 3389,
+        "protocol": "Tcp",
+        "provisioningState": "Succeeded",
+        "requestPath": null,
+        "resourceGroup": "vmss102"
+      }
+    ],
+    "provisioningState": "Succeeded",
+    "resourceGroup": "vmss102",
+    "resourceGuid": "1e3ea4a4-cc32-4447-a260-59a3adcaa88a",
+    "sku": {
+      "additionalProperties": {
+        "tier": "Regional"
+      },
+      "name": "Basic"
+    },
+    "tags": {
+      "BlueGreen": "Blue",
+      "Deployment": "Prod",
+      "ServiceName": "appwallet",
+      "Version": "1.0.0.0"
+    },
+    "type": "Microsoft.Network/loadBalancers"
+  }
+]

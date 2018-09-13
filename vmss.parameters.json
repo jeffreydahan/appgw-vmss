@@ -1,0 +1,30 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+		"instanceCount": {
+		  "value": 1
+		},
+		"adminUsername": {
+		  "value": "demo"
+		},
+		"adminPassword": {
+		  "value": "P3rf0rm@nc3!"
+		},
+		"subnetId": {
+		  "value": "Your VnetSubnetID"
+		},
+		"ServiceName": {
+		  "value": "length of 9"
+		},
+		"Deployment": {
+		  "value": "prod dev test"
+		},
+		"Version": {
+		  "value": "x.y.z"
+		},
+		"BlueGreen": {
+		  "value": "blue or green"
+		}
+	}
+}
