@@ -3,7 +3,6 @@ az login
 
 # Set Service Name, VMSS Name and Region for deployment
 svcname="PAppWall"  # Prod, App Wallet, West Europe
-vmssname=$svcname"1"
 azreg="westeurope"
 
 # Network Variables (assumes vnet pre-created)
@@ -16,13 +15,44 @@ Deployment="Prod"
 Version="1.0.0.1"
 BlueGreen="Green"
 
+# Create Resource Group to contain all service components for the region; check for existence
+rgcnt=($(az group list --query "[? name == '$svcname']".{name:name} -o tsv))
+rgcnt=${#rgcnt[@]}
+echo $rgcnt
+if [ "$rgcnt" = 1 ]
+then
+  echo Resource Group count is $rgcnt, proceeding with Resource Group creation
+  az group create --name $svcname --location $azreg
+else
+  echo Resource Group present, continuing to next section
+fi
 
-
-# Create Resource Group to contain all service components for the region
-az group create --name $svcname --location $azreg
-
-# Create application gateway
+# Create application gateway; check for existence
+appgwcnt=($(az network application-gateway list --query "[? name == '$svcname' && tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{name:name, rg:resourceGroup, ip:frontendIpConfigurations[0].privateIpAddress}" -o tsv ))
+appgwcnt=${#appgwcnt[@]}
+echo $appgwcnt
 az group deployment create --resource-group $svcname --template-file appgw.json --parameters appgw.parameters.json --parameters '{"location":{"value":"'$azreg'"}, "subnetID":{"value":"'$subnetappgw'"}, "ServiceName":{"value":"'$svcname'"}, "Deployment":{"value":"'$Deployment'"}, "Version":{"value":"'$Version'"},"BlueGreen":{"value":"'$BlueGreen'"}}'
+
+# Determine count of vmss objects for the service
+
+vmsscnt=($(az vmss list --resource-group $svcname --query "[? tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{name:name, rg:resourceGroup, ip:frontendIpConfigurations[0].privateIpAddress}" -o tsv))
+vmsscnt=${#vmsscnt[@]}
+
+if [ "$vmsscnt" = 0 ]
+then
+  echo "vmsscnt is $vmsscnt; deploying 2 vmss objects"
+
+elif [ "$vmsscnt" -eq 1 ]
+then
+  echo "vmsscnt is $vmsscnt; deploying 1 vmss objects and swapping"
+  
+elif [ "$vmsscnt" -eq 2 ]
+then
+  echo "vmsscnt is $vmsscnt; redeploying BLUE vmss object and swapping"
+  
+else
+  echo "Problem with vmsscnt; value is $vmsscnt"
+fi
 
 az group deployment create --resource-group vmss201 --template-file azuredeploy.json --parameters azuredeploy.parameters.json --parameters '{"vmssName":{"value":"vmss201"},"ServiceName":{"value":"appwallet"},"Deployment":{"value":"Prod"},"Version":{"value":"1.0.0.0"},"BlueGreen":{"value":"Blue"},"subnetId":{"value":"/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/reg1appgw/providers/Microsoft.Network/virtualNetworks/reg1vnet1/subnets/vmssa"}}'
 

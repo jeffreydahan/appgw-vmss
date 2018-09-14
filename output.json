@@ -1,166 +1,171 @@
 [
   {
     "additionalProperties": {},
+    "authenticationCertificates": [],
     "backendAddressPools": [
       {
-        "additionalProperties": {
-          "type": "Microsoft.Network/loadBalancers/backendAddressPools"
-        },
-        "backendIpConfigurations": [
-          {
-            "additionalProperties": {},
-            "applicationGatewayBackendAddressPools": null,
-            "applicationSecurityGroups": null,
-            "etag": null,
-            "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/vmss102/providers/Microsoft.Compute/virtualMachineScaleSets/vmss102/virtualMachines/0/networkInterfaces/nic/ipConfigurations/ipconfig",
-            "loadBalancerBackendAddressPools": null,
-            "loadBalancerInboundNatRules": null,
-            "name": null,
-            "primary": null,
-            "privateIpAddress": null,
-            "privateIpAddressVersion": null,
-            "privateIpAllocationMethod": null,
-            "provisioningState": null,
-            "publicIpAddress": null,
-            "resourceGroup": "vmss102",
-            "subnet": null
-          }
-        ],
-        "etag": "W/\"d7d60f0e-f3fd-4950-a31d-1e46dcf35212\"",
-        "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/vmss102/providers/Microsoft.Network/loadBalancers/vmss102rhilb/backendAddressPools/vmss102rhbepool",
-        "loadBalancingRules": [
-          {
-            "additionalProperties": {},
-            "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/vmss102/providers/Microsoft.Network/loadBalancers/vmss102rhilb/loadBalancingRules/lbrule",
-            "resourceGroup": "vmss102"
-          }
-        ],
-        "name": "vmss102rhbepool",
-        "outboundNatRule": null,
+        "additionalProperties": {},
+        "backendAddresses": [],
+        "backendIpConfigurations": null,
+        "etag": "W/\"95e03736-6634-40e5-b942-1cc0c6dc1dc0\"",
+        "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall/backendAddressPools/appGatewayBackendPool",
+        "name": "appGatewayBackendPool",
         "provisioningState": "Succeeded",
-        "resourceGroup": "vmss102"
+        "resourceGroup": "PAppWall",
+        "type": "Microsoft.Network/applicationGateways/backendAddressPools"
       }
     ],
-    "etag": "W/\"d7d60f0e-f3fd-4950-a31d-1e46dcf35212\"",
+    "backendHttpSettingsCollection": [
+      {
+        "additionalProperties": {},
+        "affinityCookieName": null,
+        "authenticationCertificates": null,
+        "connectionDraining": null,
+        "cookieBasedAffinity": "Disabled",
+        "etag": "W/\"95e03736-6634-40e5-b942-1cc0c6dc1dc0\"",
+        "hostName": null,
+        "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall/backendHttpSettingsCollection/appGatewayBackendHttpSettings",
+        "name": "appGatewayBackendHttpSettings",
+        "path": null,
+        "pickHostNameFromBackendAddress": false,
+        "port": 80,
+        "probe": null,
+        "probeEnabled": null,
+        "protocol": "Http",
+        "provisioningState": "Succeeded",
+        "requestTimeout": 30,
+        "resourceGroup": "PAppWall",
+        "type": "Microsoft.Network/applicationGateways/backendHttpSettingsCollection"
+      }
+    ],
+    "enableHttp2": false,
+    "etag": "W/\"95e03736-6634-40e5-b942-1cc0c6dc1dc0\"",
     "frontendIpConfigurations": [
       {
-        "additionalProperties": {
-          "type": "Microsoft.Network/loadBalancers/frontendIPConfigurations"
-        },
-        "etag": "W/\"d7d60f0e-f3fd-4950-a31d-1e46dcf35212\"",
-        "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/vmss102/providers/Microsoft.Network/loadBalancers/vmss102rhilb/frontendIPConfigurations/LoadBalancerFrontEnd",
-        "inboundNatPools": null,
-        "inboundNatRules": null,
-        "loadBalancingRules": [
-          {
-            "additionalProperties": {},
-            "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/vmss102/providers/Microsoft.Network/loadBalancers/vmss102rhilb/loadBalancingRules/lbrule",
-            "resourceGroup": "vmss102"
-          }
-        ],
-        "name": "LoadBalancerFrontEnd",
-        "outboundNatRules": null,
-        "privateIpAddress": "10.0.2.4",
+        "additionalProperties": {},
+        "etag": "W/\"95e03736-6634-40e5-b942-1cc0c6dc1dc0\"",
+        "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall/frontendIPConfigurations/appGatewayFrontendIP",
+        "name": "appGatewayFrontendIP",
+        "privateIpAddress": "10.0.0.6",
         "privateIpAllocationMethod": "Dynamic",
         "provisioningState": "Succeeded",
         "publicIpAddress": null,
-        "resourceGroup": "vmss102",
+        "resourceGroup": "PAppWall",
         "subnet": {
           "additionalProperties": {},
-          "addressPrefix": null,
-          "etag": null,
-          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/reg1appgw/providers/Microsoft.Network/virtualNetworks/reg1vnet1/subnets/vmssb",
-          "ipConfigurations": null,
-          "name": null,
-          "networkSecurityGroup": null,
-          "provisioningState": null,
-          "resourceGroup": "reg1appgw",
-          "resourceNavigationLinks": null,
-          "routeTable": null,
-          "serviceEndpoints": null
+          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/storage/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/appgw",
+          "resourceGroup": "storage"
         },
-        "zones": null
+        "type": "Microsoft.Network/applicationGateways/frontendIPConfigurations"
       }
     ],
-    "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/vmss102/providers/Microsoft.Network/loadBalancers/vmss102rhilb",
-    "inboundNatPools": [],
-    "inboundNatRules": [],
-    "loadBalancingRules": [
+    "frontendPorts": [
       {
-        "additionalProperties": {
-          "type": "Microsoft.Network/loadBalancers/loadBalancingRules"
-        },
-        "backendAddressPool": {
+        "additionalProperties": {},
+        "etag": "W/\"95e03736-6634-40e5-b942-1cc0c6dc1dc0\"",
+        "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall/frontendPorts/appGatewayFrontendPort",
+        "name": "appGatewayFrontendPort",
+        "port": 80,
+        "provisioningState": "Succeeded",
+        "resourceGroup": "PAppWall",
+        "type": "Microsoft.Network/applicationGateways/frontendPorts"
+      }
+    ],
+    "gatewayIpConfigurations": [
+      {
+        "additionalProperties": {},
+        "etag": "W/\"95e03736-6634-40e5-b942-1cc0c6dc1dc0\"",
+        "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall/gatewayIPConfigurations/appGatewayIpConfig",
+        "name": "appGatewayIpConfig",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "PAppWall",
+        "subnet": {
           "additionalProperties": {},
-          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/vmss102/providers/Microsoft.Network/loadBalancers/vmss102rhilb/backendAddressPools/vmss102rhbepool",
-          "resourceGroup": "vmss102"
+          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/storage/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/appgw",
+          "resourceGroup": "storage"
         },
-        "backendPort": 80,
-        "disableOutboundSnat": null,
-        "enableFloatingIp": false,
-        "etag": "W/\"d7d60f0e-f3fd-4950-a31d-1e46dcf35212\"",
+        "type": "Microsoft.Network/applicationGateways/gatewayIPConfigurations"
+      }
+    ],
+    "httpListeners": [
+      {
+        "additionalProperties": {},
+        "etag": "W/\"95e03736-6634-40e5-b942-1cc0c6dc1dc0\"",
         "frontendIpConfiguration": {
           "additionalProperties": {},
-          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/vmss102/providers/Microsoft.Network/loadBalancers/vmss102rhilb/frontendIPConfigurations/LoadBalancerFrontEnd",
-          "resourceGroup": "vmss102"
+          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall/frontendIPConfigurations/appGatewayFrontendIP",
+          "resourceGroup": "PAppWall"
         },
-        "frontendPort": 80,
-        "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/vmss102/providers/Microsoft.Network/loadBalancers/vmss102rhilb/loadBalancingRules/lbrule",
-        "idleTimeoutInMinutes": 15,
-        "loadDistribution": "Default",
-        "name": "lbrule",
-        "probe": {
+        "frontendPort": {
           "additionalProperties": {},
-          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/vmss102/providers/Microsoft.Network/loadBalancers/vmss102rhilb/probes/lbprobe",
-          "resourceGroup": "vmss102"
+          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall/frontendPorts/appGatewayFrontendPort",
+          "resourceGroup": "PAppWall"
         },
-        "protocol": "Tcp",
+        "hostName": null,
+        "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall/httpListeners/appGatewayHttpListener",
+        "name": "appGatewayHttpListener",
+        "protocol": "Http",
         "provisioningState": "Succeeded",
-        "resourceGroup": "vmss102"
+        "requireServerNameIndication": false,
+        "resourceGroup": "PAppWall",
+        "sslCertificate": null,
+        "type": "Microsoft.Network/applicationGateways/httpListeners"
       }
     ],
+    "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall",
     "location": "westeurope",
-    "name": "vmss102rhilb",
-    "outboundNatRules": null,
-    "probes": [
+    "name": "PAppWall",
+    "operationalState": "Running",
+    "probes": [],
+    "provisioningState": "Succeeded",
+    "redirectConfigurations": [],
+    "requestRoutingRules": [
       {
-        "additionalProperties": {
-          "type": "Microsoft.Network/loadBalancers/probes"
+        "additionalProperties": {},
+        "backendAddressPool": {
+          "additionalProperties": {},
+          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall/backendAddressPools/appGatewayBackendPool",
+          "resourceGroup": "PAppWall"
         },
-        "etag": "W/\"d7d60f0e-f3fd-4950-a31d-1e46dcf35212\"",
-        "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/vmss102/providers/Microsoft.Network/loadBalancers/vmss102rhilb/probes/lbprobe",
-        "intervalInSeconds": 15,
-        "loadBalancingRules": [
-          {
-            "additionalProperties": {},
-            "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/vmss102/providers/Microsoft.Network/loadBalancers/vmss102rhilb/loadBalancingRules/lbrule",
-            "resourceGroup": "vmss102"
-          }
-        ],
-        "name": "lbprobe",
-        "numberOfProbes": 2,
-        "port": 3389,
-        "protocol": "Tcp",
+        "backendHttpSettings": {
+          "additionalProperties": {},
+          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall/backendHttpSettingsCollection/appGatewayBackendHttpSettings",
+          "resourceGroup": "PAppWall"
+        },
+        "etag": "W/\"95e03736-6634-40e5-b942-1cc0c6dc1dc0\"",
+        "httpListener": {
+          "additionalProperties": {},
+          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall/httpListeners/appGatewayHttpListener",
+          "resourceGroup": "PAppWall"
+        },
+        "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall/requestRoutingRules/rule1",
+        "name": "rule1",
         "provisioningState": "Succeeded",
-        "requestPath": null,
-        "resourceGroup": "vmss102"
+        "redirectConfiguration": null,
+        "resourceGroup": "PAppWall",
+        "ruleType": "Basic",
+        "type": "Microsoft.Network/applicationGateways/requestRoutingRules",
+        "urlPathMap": null
       }
     ],
-    "provisioningState": "Succeeded",
-    "resourceGroup": "vmss102",
-    "resourceGuid": "1e3ea4a4-cc32-4447-a260-59a3adcaa88a",
+    "resourceGroup": "PAppWall",
+    "resourceGuid": "7cef479f-70ec-40e3-8b28-504df30f10f5",
     "sku": {
-      "additionalProperties": {
-        "tier": "Regional"
-      },
-      "name": "Basic"
+      "additionalProperties": {},
+      "capacity": 2,
+      "name": "Standard_Small",
+      "tier": "Standard"
     },
+    "sslCertificates": [],
+    "sslPolicy": null,
     "tags": {
-      "BlueGreen": "Blue",
+      "BlueGreen": "Green",
       "Deployment": "Prod",
-      "ServiceName": "appwallet",
-      "Version": "1.0.0.0"
+      "ServiceName": "PAppWall",
+      "Version": "1.0.0.1"
     },
-    "type": "Microsoft.Network/loadBalancers"
+    "type": "Microsoft.Network/applicationGateways",
+    "urlPathMaps": [],
+    "webApplicationFirewallConfiguration": null
   }
 ]
