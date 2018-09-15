@@ -44,12 +44,6 @@
         },
         "Deployment": {
             "type": "string"
-        },
-        "Version": {
-            "type": "string"
-        },
-        "BlueGreen": {
-            "type": "string"
         }
     },
     "variables": {
@@ -62,9 +56,7 @@
             "apiVersion": "2017-10-01",
             "tags": {
                 "ServiceName": "[parameters('ServiceName')]",
-                "Deployment": "[parameters('Deployment')]",
-                "Version": "[parameters('Version')]",
-                "BlueGreen": "[parameters('BlueGreen')]"
+                "Deployment": "[parameters('Deployment')]"
             },
             "location": "[parameters('location')]",
             "properties": {

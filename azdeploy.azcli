@@ -13,7 +13,6 @@ subnetvmss="/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/s
 # Resource Tags 
 Deployment="Prod"
 Version="1.0.0.1"
-BlueGreen="Green"
 
 # Create Resource Group to contain all service components for the region; check for existence
 rgcnt=($(az group list --query "[? name == '$svcname']".{name:name} -o tsv))
@@ -28,23 +27,41 @@ else
 fi
 
 # Create application gateway; check for existence
-appgwcnt=($(az network application-gateway list --query "[? name == '$svcname' && tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{name:name, rg:resourceGroup, ip:frontendIpConfigurations[0].privateIpAddress}" -o tsv ))
+appgwcnt=($(az network application-gateway list --query "[? name == '$svcname' && tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{name:name}" -o tsv ))
 appgwcnt=${#appgwcnt[@]}
 echo $appgwcnt
-az group deployment create --resource-group $svcname --template-file appgw.json --parameters appgw.parameters.json --parameters '{"location":{"value":"'$azreg'"}, "subnetID":{"value":"'$subnetappgw'"}, "ServiceName":{"value":"'$svcname'"}, "Deployment":{"value":"'$Deployment'"}, "Version":{"value":"'$Version'"},"BlueGreen":{"value":"'$BlueGreen'"}}'
+if ["$appgwcnt" = 1]
+then
+  echo Application Gateway count is $appgwcnt, proceeding with Application Gateway creation
+  az group deployment create --resource-group $svcname --template-file appgw.json --parameters appgw.parameters.json --parameters '{"location":{"value":"'$azreg'"}, "subnetID":{"value":"'$subnetappgw'"}, "ServiceName":{"value":"'$svcname'"}, "Deployment":{"value":"'$Deployment'"}}}}'
+else
+  echo Application Gateway present, continuing to next section
+fi
 
-# Determine count of vmss objects for the service
-
-vmsscnt=($(az vmss list --resource-group $svcname --query "[? tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{name:name, rg:resourceGroup, ip:frontendIpConfigurations[0].privateIpAddress}" -o tsv))
+# Create vmss; check for existence
+vmsscnt=($(az vmss list --resource-group $svcname --query "[? tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{name:name}" -o tsv))
 vmsscnt=${#vmsscnt[@]}
+echo $vmsscnt
 
+#############
+# handle vmss names 1 and 2
+#############
 if [ "$vmsscnt" = 0 ]
 then
-  echo "vmsscnt is $vmsscnt; deploying 2 vmss objects"
-
+  echo vmsscnt is $vmsscnt; deploying 2 vmss objects
+  # Create Green Deployment; attach to application gateway
+  az group deployment create --resource-group $svcname --template-file vmss.json --parameters vmss.parameters.json --parameters '{"ServiceName":{"value":"'$svcname'"},"Deployment":{"value":"'$Deployment'"},"Version":{"value":"'$Version'"},"BlueGreen":{"value":"'Green'"},"subnetId":{"value":"'$subnetvmss'"}}'
+  # Obtain IP address vmss Green Load Balancer
+  greenIP=($(az network lb list -o table --query "[? tags.BlueGreen == 'Green' && tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{ip:frontendIpConfigurations[0].privateIpAddress}" -o tsv))
+  echo Green IP addr: $greenIP
+  # Attach Green vmss to Application Gateway
+  az network application-gateway address-pool update --resource-group $svcname --gateway-name $svcname --name appGatewayBackendPool --servers $greenIP
+  # Create Blue Deployment; do not attach to applicaiton gateway
+  az group deployment create --resource-group $svcname --template-file vmss.json --parameters vmss.parameters.json --parameters '{"ServiceName":{"value":"'$svcname'"},"Deployment":{"value":"'$Deployment'"},"Version":{"value":"'$Version'"},"BlueGreen":{"value":"'Blue'"},"subnetId":{"value":"'$subnetvmss'"}}'
+  
 elif [ "$vmsscnt" -eq 1 ]
 then
-  echo "vmsscnt is $vmsscnt; deploying 1 vmss objects and swapping"
+  echo vmsscnt is $vmsscnt; deploying 1 vmss objects and swapping
   
 elif [ "$vmsscnt" -eq 2 ]
 then
@@ -54,7 +71,6 @@ else
   echo "Problem with vmsscnt; value is $vmsscnt"
 fi
 
-az group deployment create --resource-group vmss201 --template-file azuredeploy.json --parameters azuredeploy.parameters.json --parameters '{"vmssName":{"value":"vmss201"},"ServiceName":{"value":"appwallet"},"Deployment":{"value":"Prod"},"Version":{"value":"1.0.0.0"},"BlueGreen":{"value":"Blue"},"subnetId":{"value":"/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/reg1appgw/providers/Microsoft.Network/virtualNetworks/reg1vnet1/subnets/vmssa"}}'
 
 
 az network application-gateway address-pool update --resource-group reg1appgw --gateway-name reg1pubappgw --name appGatewayBackendPool --servers 10.0.1.4
@@ -81,7 +97,11 @@ az network lb update
 green=$(az network application-gateway list --query "[].backendAddressPools[].backendAddresses[].ipAddress" --output tsv)
 echo $green
 
+act=($(az account list --query "[].{state:state}" -o tsv))
+echo $act
+echo ${#act[@]}
 
+appgwcnt=($(az network application-gateway list --query "[? name == '$svcname' && tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{name:name, rg:resourceGroup, ip:frontendIpConfigurations[0].privateIpAddress}" -o tsv ))
 
 
 az network lb list -o table --query "[? tags.BlueGreen == 'Blue' && tags.ServiceName == 'appwallet' && tags.Deployment == 'Prod' ]" --output json > output.json

@@ -1,171 +1,148 @@
-[
-  {
-    "additionalProperties": {},
-    "authenticationCertificates": [],
-    "backendAddressPools": [
-      {
-        "additionalProperties": {},
-        "backendAddresses": [],
-        "backendIpConfigurations": null,
-        "etag": "W/\"95e03736-6634-40e5-b942-1cc0c6dc1dc0\"",
-        "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall/backendAddressPools/appGatewayBackendPool",
-        "name": "appGatewayBackendPool",
-        "provisioningState": "Succeeded",
-        "resourceGroup": "PAppWall",
-        "type": "Microsoft.Network/applicationGateways/backendAddressPools"
-      }
-    ],
-    "backendHttpSettingsCollection": [
-      {
-        "additionalProperties": {},
-        "affinityCookieName": null,
-        "authenticationCertificates": null,
-        "connectionDraining": null,
-        "cookieBasedAffinity": "Disabled",
-        "etag": "W/\"95e03736-6634-40e5-b942-1cc0c6dc1dc0\"",
-        "hostName": null,
-        "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall/backendHttpSettingsCollection/appGatewayBackendHttpSettings",
-        "name": "appGatewayBackendHttpSettings",
-        "path": null,
-        "pickHostNameFromBackendAddress": false,
-        "port": 80,
-        "probe": null,
-        "probeEnabled": null,
-        "protocol": "Http",
-        "provisioningState": "Succeeded",
-        "requestTimeout": 30,
-        "resourceGroup": "PAppWall",
-        "type": "Microsoft.Network/applicationGateways/backendHttpSettingsCollection"
-      }
-    ],
-    "enableHttp2": false,
-    "etag": "W/\"95e03736-6634-40e5-b942-1cc0c6dc1dc0\"",
-    "frontendIpConfigurations": [
-      {
-        "additionalProperties": {},
-        "etag": "W/\"95e03736-6634-40e5-b942-1cc0c6dc1dc0\"",
-        "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall/frontendIPConfigurations/appGatewayFrontendIP",
-        "name": "appGatewayFrontendIP",
-        "privateIpAddress": "10.0.0.6",
-        "privateIpAllocationMethod": "Dynamic",
-        "provisioningState": "Succeeded",
-        "publicIpAddress": null,
-        "resourceGroup": "PAppWall",
-        "subnet": {
-          "additionalProperties": {},
-          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/storage/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/appgw",
-          "resourceGroup": "storage"
-        },
-        "type": "Microsoft.Network/applicationGateways/frontendIPConfigurations"
-      }
-    ],
-    "frontendPorts": [
-      {
-        "additionalProperties": {},
-        "etag": "W/\"95e03736-6634-40e5-b942-1cc0c6dc1dc0\"",
-        "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall/frontendPorts/appGatewayFrontendPort",
-        "name": "appGatewayFrontendPort",
-        "port": 80,
-        "provisioningState": "Succeeded",
-        "resourceGroup": "PAppWall",
-        "type": "Microsoft.Network/applicationGateways/frontendPorts"
-      }
-    ],
-    "gatewayIpConfigurations": [
-      {
-        "additionalProperties": {},
-        "etag": "W/\"95e03736-6634-40e5-b942-1cc0c6dc1dc0\"",
-        "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall/gatewayIPConfigurations/appGatewayIpConfig",
-        "name": "appGatewayIpConfig",
-        "provisioningState": "Succeeded",
-        "resourceGroup": "PAppWall",
-        "subnet": {
-          "additionalProperties": {},
-          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/storage/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/appgw",
-          "resourceGroup": "storage"
-        },
-        "type": "Microsoft.Network/applicationGateways/gatewayIPConfigurations"
-      }
-    ],
-    "httpListeners": [
-      {
-        "additionalProperties": {},
-        "etag": "W/\"95e03736-6634-40e5-b942-1cc0c6dc1dc0\"",
-        "frontendIpConfiguration": {
-          "additionalProperties": {},
-          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall/frontendIPConfigurations/appGatewayFrontendIP",
+{
+  "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Resources/deployments/vmss",
+  "name": "vmss",
+  "properties": {
+    "additionalProperties": {
+      "duration": "PT3M16.5843697S",
+      "outputResources": [
+        {
+          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Compute/virtualMachineScaleSets/PAppWall",
           "resourceGroup": "PAppWall"
         },
-        "frontendPort": {
-          "additionalProperties": {},
-          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall/frontendPorts/appGatewayFrontendPort",
+        {
+          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/loadBalancers/PAppWallilb",
           "resourceGroup": "PAppWall"
         },
-        "hostName": null,
-        "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall/httpListeners/appGatewayHttpListener",
-        "name": "appGatewayHttpListener",
-        "protocol": "Http",
-        "provisioningState": "Succeeded",
-        "requireServerNameIndication": false,
+        {
+          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/loadBalancers/PAppWalllb",
+          "resourceGroup": "PAppWall"
+        },
+        {
+          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/publicIPAddresses/PAppWallpip",
+          "resourceGroup": "PAppWall"
+        }
+      ],
+      "templateHash": "627896744426769623"
+    },
+    "correlationId": "97d28a43-f92e-4869-8bb9-d8bc6f67555d",
+    "debugSetting": null,
+    "dependencies": [
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/loadBalancers/PAppWalllb",
+            "resourceGroup": "PAppWall",
+            "resourceName": "PAppWalllb",
+            "resourceType": "Microsoft.Network/loadBalancers"
+          }
+        ],
+        "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Compute/virtualMachineScaleSets/PAppWall",
         "resourceGroup": "PAppWall",
-        "sslCertificate": null,
-        "type": "Microsoft.Network/applicationGateways/httpListeners"
+        "resourceName": "PAppWall",
+        "resourceType": "Microsoft.Compute/virtualMachineScaleSets"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/publicIPAddresses/PAppWallpip",
+            "resourceGroup": "PAppWall",
+            "resourceName": "PAppWallpip",
+            "resourceType": "Microsoft.Network/publicIPAddresses"
+          }
+        ],
+        "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/loadBalancers/PAppWalllb",
+        "resourceGroup": "PAppWall",
+        "resourceName": "PAppWalllb",
+        "resourceType": "Microsoft.Network/loadBalancers"
       }
     ],
-    "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall",
-    "location": "westeurope",
-    "name": "PAppWall",
-    "operationalState": "Running",
-    "probes": [],
+    "mode": "Incremental",
+    "outputs": null,
+    "parameters": {
+      "adminPassword": {
+        "type": "SecureString"
+      },
+      "adminUsername": {
+        "type": "String",
+        "value": "demo"
+      },
+      "blueGreen": {
+        "type": "String",
+        "value": "Green"
+      },
+      "deployment": {
+        "type": "String",
+        "value": "Prod"
+      },
+      "instanceCount": {
+        "type": "Int",
+        "value": 1
+      },
+      "serviceName": {
+        "type": "String",
+        "value": "PAppWall"
+      },
+      "subnetId": {
+        "type": "String",
+        "value": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/storage/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/vmss"
+      },
+      "version": {
+        "type": "String",
+        "value": "1.0.0.1"
+      },
+      "vmSku": {
+        "type": "String",
+        "value": "Standard_DS2_V2"
+      }
+    },
+    "parametersLink": null,
+    "providers": [
+      {
+        "id": null,
+        "namespace": "Microsoft.Compute",
+        "registrationState": null,
+        "resourceTypes": [
+          {
+            "aliases": null,
+            "apiVersions": null,
+            "locations": [
+              "westeurope"
+            ],
+            "properties": null,
+            "resourceType": "virtualMachineScaleSets"
+          }
+        ]
+      },
+      {
+        "id": null,
+        "namespace": "Microsoft.Network",
+        "registrationState": null,
+        "resourceTypes": [
+          {
+            "aliases": null,
+            "apiVersions": null,
+            "locations": [
+              "westeurope"
+            ],
+            "properties": null,
+            "resourceType": "publicIPAddresses"
+          },
+          {
+            "aliases": null,
+            "apiVersions": null,
+            "locations": [
+              "westeurope"
+            ],
+            "properties": null,
+            "resourceType": "loadBalancers"
+          }
+        ]
+      }
+    ],
     "provisioningState": "Succeeded",
-    "redirectConfigurations": [],
-    "requestRoutingRules": [
-      {
-        "additionalProperties": {},
-        "backendAddressPool": {
-          "additionalProperties": {},
-          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall/backendAddressPools/appGatewayBackendPool",
-          "resourceGroup": "PAppWall"
-        },
-        "backendHttpSettings": {
-          "additionalProperties": {},
-          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall/backendHttpSettingsCollection/appGatewayBackendHttpSettings",
-          "resourceGroup": "PAppWall"
-        },
-        "etag": "W/\"95e03736-6634-40e5-b942-1cc0c6dc1dc0\"",
-        "httpListener": {
-          "additionalProperties": {},
-          "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall/httpListeners/appGatewayHttpListener",
-          "resourceGroup": "PAppWall"
-        },
-        "id": "/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/PAppWall/providers/Microsoft.Network/applicationGateways/PAppWall/requestRoutingRules/rule1",
-        "name": "rule1",
-        "provisioningState": "Succeeded",
-        "redirectConfiguration": null,
-        "resourceGroup": "PAppWall",
-        "ruleType": "Basic",
-        "type": "Microsoft.Network/applicationGateways/requestRoutingRules",
-        "urlPathMap": null
-      }
-    ],
-    "resourceGroup": "PAppWall",
-    "resourceGuid": "7cef479f-70ec-40e3-8b28-504df30f10f5",
-    "sku": {
-      "additionalProperties": {},
-      "capacity": 2,
-      "name": "Standard_Small",
-      "tier": "Standard"
-    },
-    "sslCertificates": [],
-    "sslPolicy": null,
-    "tags": {
-      "BlueGreen": "Green",
-      "Deployment": "Prod",
-      "ServiceName": "PAppWall",
-      "Version": "1.0.0.1"
-    },
-    "type": "Microsoft.Network/applicationGateways",
-    "urlPathMaps": [],
-    "webApplicationFirewallConfiguration": null
-  }
-]
+    "template": null,
+    "templateLink": null,
+    "timestamp": "2018-09-15T05:24:33.072418+00:00"
+  },
+  "resourceGroup": "PAppWall"
+}

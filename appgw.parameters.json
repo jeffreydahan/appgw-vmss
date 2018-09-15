@@ -31,12 +31,6 @@
         },
         "Deployment": {
             "value": "prod dev test"
-        },
-        "Version": {
-            "value": "x.y.z"
-        },
-        "BlueGreen": {
-            "value": "blue or green"
         }
     }
 }
