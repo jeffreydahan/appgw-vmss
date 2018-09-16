@@ -1,11 +1,11 @@
-az login
+#az login
 
 
 # Set Service Name, VMSS Name and Region for deployment
-svcname="PAppWall"  # Prod, App Wallet, West Europe
+svcname="dwall"  # Prod, App Wallet
 azreg="westeurope"
 
-# Network Variables (assumes vnet pre-created)
+# Network Variables (assumes vnet and subnets pre-created)
 vnet="/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/storage/providers/Microsoft.Network/virtualNetworks/vnet1/"
 subnetappgw="/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/storage/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/appgw"
 subnetvmss="/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/storage/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/vmss"
@@ -14,11 +14,11 @@ subnetvmss="/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/s
 Deployment="Prod"
 Version="1.0.0.1"
 
-# Create Resource Group to contain all service components for the region; check for existence
+# Create Resource Group to contain all service components for the region, check for existence
 rgcnt=($(az group list --query "[? name == '$svcname']".{name:name} -o tsv))
 rgcnt=${#rgcnt[@]}
 echo $rgcnt
-if [ "$rgcnt" = 1 ]
+if [ "$rgcnt" = "0" ]
 then
   echo Resource Group count is $rgcnt, proceeding with Resource Group creation
   az group create --name $svcname --location $azreg
@@ -26,82 +26,137 @@ else
   echo Resource Group present, continuing to next section
 fi
 
-# Create application gateway; check for existence
+# Create application gateway, check for existence
 appgwcnt=($(az network application-gateway list --query "[? name == '$svcname' && tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{name:name}" -o tsv ))
 appgwcnt=${#appgwcnt[@]}
 echo $appgwcnt
-if ["$appgwcnt" = 1]
+if [ "$appgwcnt" = "0" ]
 then
   echo Application Gateway count is $appgwcnt, proceeding with Application Gateway creation
-  az group deployment create --resource-group $svcname --template-file appgw.json --parameters appgw.parameters.json --parameters '{"location":{"value":"'$azreg'"}, "subnetID":{"value":"'$subnetappgw'"}, "ServiceName":{"value":"'$svcname'"}, "Deployment":{"value":"'$Deployment'"}}}}'
+  az group deployment create --resource-group $svcname --template-file appgw.json --parameters appgw.parameters.json --parameters '{"location":{"value":"'$azreg'"}, "subnetID":{"value":"'$subnetappgw'"}, "ServiceName":{"value":"'$svcname'"}, "Deployment":{"value":"'$Deployment'"}}'
 else
   echo Application Gateway present, continuing to next section
 fi
 
-# Create vmss; check for existence
+# Create vmss, check for existence
 vmsscnt=($(az vmss list --resource-group $svcname --query "[? tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{name:name}" -o tsv))
 vmsscnt=${#vmsscnt[@]}
 echo $vmsscnt
 
-#############
-# handle vmss names 1 and 2
-#############
-if [ "$vmsscnt" = 0 ]
+if [ "$vmsscnt" = "0" ]
 then
-  echo vmsscnt is $vmsscnt; deploying 2 vmss objects
-  # Create Green Deployment; attach to application gateway
-  az group deployment create --resource-group $svcname --template-file vmss.json --parameters vmss.parameters.json --parameters '{"ServiceName":{"value":"'$svcname'"},"Deployment":{"value":"'$Deployment'"},"Version":{"value":"'$Version'"},"BlueGreen":{"value":"'Green'"},"subnetId":{"value":"'$subnetvmss'"}}'
+  echo vmsscnt is $vmsscnt, deploying 2 vmss objects
+  
+  # Create Green Deployment, attach to application gateway
+  vmssname="$svcname""1"
+  BlueGreen="Green"
+  echo building vmss $vmssname and setting to $BlueGreen 
+  az group deployment create --resource-group $svcname --template-file vmss.json --parameters vmss.parameters.json --parameters '{"vmssname":{"value":"'$vmssname'"},"ServiceName":{"value":"'$svcname'"},"Deployment":{"value":"'$Deployment'"},"Version":{"value":"'$Version'"},"BlueGreen":{"value":"'$BlueGreen'"},"subnetId":{"value":"'$subnetvmss'"}}'
   # Obtain IP address vmss Green Load Balancer
-  greenIP=($(az network lb list -o table --query "[? tags.BlueGreen == 'Green' && tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{ip:frontendIpConfigurations[0].privateIpAddress}" -o tsv))
+  greenIP=($(az network lb list -o table --query "[? tags.BlueGreen == '$BlueGreen' && tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{ip:frontendIpConfigurations[0].privateIpAddress}" -o tsv))
   echo Green IP addr: $greenIP
   # Attach Green vmss to Application Gateway
+  echo attaching Green vmss $vmssname $greenIP to Application Gateway $svcname
   az network application-gateway address-pool update --resource-group $svcname --gateway-name $svcname --name appGatewayBackendPool --servers $greenIP
-  # Create Blue Deployment; do not attach to applicaiton gateway
-  az group deployment create --resource-group $svcname --template-file vmss.json --parameters vmss.parameters.json --parameters '{"ServiceName":{"value":"'$svcname'"},"Deployment":{"value":"'$Deployment'"},"Version":{"value":"'$Version'"},"BlueGreen":{"value":"'Blue'"},"subnetId":{"value":"'$subnetvmss'"}}'
+  # Create Blue Deployment, do not attach to applicaiton gateway
+  vmssname="$svcname""2"
+  BlueGreen="Blue"
+  echo building vmss $vmssname and setting to $BlueGreen 
+  az group deployment create --resource-group $svcname --template-file vmss.json --parameters vmss.parameters.json --parameters '{"vmssname":{"value":"'$vmssname'"},"ServiceName":{"value":"'$svcname'"},"Deployment":{"value":"'$Deployment'"},"Version":{"value":"'$Version'"},"BlueGreen":{"value":"'$BlueGreen'"},"subnetId":{"value":"'$subnetvmss'"}}'
   
-elif [ "$vmsscnt" -eq 1 ]
+elif [ "$vmsscnt" = "1" ]
 then
-  echo vmsscnt is $vmsscnt; deploying 1 vmss objects and swapping
+  echo vmsscnt is $vmsscnt, deploying 1 vmss objects and swapping
+
+  # Get current vmssname and load balancer nameand set new one
+  curvmssname=($(az vmss list --resource-group $svcname --query "[? tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{name:name}" -o tsv))
+  curlbname=($(az network lb list --resource-group $svcname --query "[? tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{name:name}" -o tsv))
+  echo current vmssname is $curvmssname, current load balancer name is $curlbname 
+  if [ "$curvmssname" == "$svcname""1" ]
+  then
+    
+    # Create Green Deployment, attach to application gateway
+    vmssname="$svcname""2"
+    BlueGreen="Green"
+    echo building vmss $vmssname and setting to $BlueGreen 
+    az group deployment create --resource-group $svcname --template-file vmss.json --parameters vmss.parameters.json --parameters '{"vmssname":{"value":"'$vmssname'"},"ServiceName":{"value":"'$svcname'"},"Deployment":{"value":"'$Deployment'"},"Version":{"value":"'$Version'"},"BlueGreen":{"value":"'$BlueGreen'"},"subnetId":{"value":"'$subnetvmss'"}}'
+    
+    # Set current vmss and load balancer to Blue
+    curBlueGreen="Blue"
+    echo setting vmss $curvmssname and load balancer $curlbname to $curBlueGreen 
+    az network lb update --resource-group $svcname --name $curlbname --set tags.BlueGreen="'$curBlueGreen'"
+    az vmss update --resource-group $svcname --name $curvmssname --set tags.BlueGreen="'$curBlueGreen'"
+    
+    # Obtain IP address vmss Green Load Balancer
+    greenIP=($(az network lb list -o table --query "[? tags.BlueGreen == '$BlueGreen' && tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{ip:frontendIpConfigurations[0].privateIpAddress}" -o tsv))
+    echo Green IP addr: $greenIP
+    
+    # Attach Green vmss to Application Gateway
+    echo attaching Green vmss $vmssname $greenIP to Application Gateway $svcname
+    az network application-gateway address-pool update --resource-group $svcname --gateway-name $svcname --name appGatewayBackendPool --servers $greenIP
+    
+  elif [ "$curvmssname" == "$svcname""2" ]
+  then
   
-elif [ "$vmsscnt" -eq 2 ]
+    # Create Green Deployment, attach to application gateway
+    vmssname="$svcname""1"
+    BlueGreen="Green"
+    echo building vmss $vmssname and setting to $BlueGreen 
+    az group deployment create --resource-group $svcname --template-file vmss.json --parameters vmss.parameters.json --parameters '{"vmssname":{"value":"'$vmssname'"},"ServiceName":{"value":"'$svcname'"},"Deployment":{"value":"'$Deployment'"},"Version":{"value":"'$Version'"},"BlueGreen":{"value":"'$BlueGreen'"},"subnetId":{"value":"'$subnetvmss'"}}'
+  
+    # Set current vmss and load balancer to Blue
+    curBlueGreen="Blue"
+    echo setting vmss $curvmssname and load balancer $curlbname to $curBlueGreen 
+    az network lb update --resource-group $svcname --name $curlbname --set tags.BlueGreen="'$curBlueGreen'"
+    az vmss update --resource-group $svcname --name $curvmssname --set tags.BlueGreen="'$curBlueGreen'"
+    
+    # Obtain IP address vmss Green Load Balancer
+    greenIP=($(az network lb list -o table --query "[? tags.BlueGreen == '$BlueGreen' && tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{ip:frontendIpConfigurations[0].privateIpAddress}" -o tsv))
+    echo Green IP addr: $greenIP
+  
+    # Attach Green vmss to Application Gateway
+    echo attaching Green vmss $vmssname $greenIP to Application Gateway $svcname
+    az network application-gateway address-pool update --resource-group $svcname --gateway-name $svcname --name appGatewayBackendPool --servers $greenIP
+    
+  else
+    echo Problem with vmssname due to unexpected format: $curvmssname
+  fi  
+
+elif [ "$vmsscnt" = "2" ]
 then
-  echo "vmsscnt is $vmsscnt; redeploying BLUE vmss object and swapping"
+  echo vmsscnt is $vmsscnt, redeploying BLUE vmss object and swapping
+
+  # Determine existing Blue and Green delpoyment state
+  BlueGreen="Blue"
+  curbluevmssname=($(az vmss list --resource-group $svcname --query "[? tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment' && tags.BlueGreen == '$BlueGreen'].{name:name}" -o tsv))
+  curbluelbname=($(az network lb list --resource-group $svcname --query "[? tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment' && tags.BlueGreen == '$BlueGreen'].{name:name}" -o tsv))
+  echo current Blue vmssname is $curbluevmssname, current Blue load balancer name is $curbluelbname 
+  BlueGreen="Green"
+  curgreenvmssname=($(az vmss list --resource-group $svcname --query "[? tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment' && tags.BlueGreen == '$BlueGreen'].{name:name}" -o tsv))
+  curgreenlbname=($(az network lb list --resource-group $svcname --query "[? tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment' && tags.BlueGreen == '$BlueGreen'].{name:name}" -o tsv))
+  echo current Green vmssname is $curgreenvmssname, current Green load balancer name is $curgreenlbname 
   
+  # Redeploy Blue vmss
+  BlueGreen="Blue"
+  az group deployment create --resource-group $svcname --template-file vmss.json --parameters vmss.parameters.json --parameters '{"vmssname":{"value":"'$curbluevmssname'"},"ServiceName":{"value":"'$svcname'"},"Deployment":{"value":"'$Deployment'"},"Version":{"value":"'$Version'"},"BlueGreen":{"value":"'$BlueGreen'"},"subnetId":{"value":"'$subnetvmss'"}}'
+  blueIP=($(az network lb list -o table --query "[? tags.BlueGreen == '$BlueGreen' && tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{ip:frontendIpConfigurations[0].privateIpAddress}" -o tsv))
+  echo Blue IP addr: $blueIP
+
+  # Swap Blue and Green Tags, update IP
+  BlueGreen="Green"
+  echo setting Blue vmss $curbluevmssname and Blue load balancer $curbluevmssname to Green
+  az network lb update --resource-group $svcname --name $curbluelbname --set tags.BlueGreen="'$BlueGreen'"
+  az vmss update --resource-group $svcname --name $curbluevmssname --set tags.BlueGreen="'$BlueGreen'"
+  BlueGreen="Blue"
+  echo setting Green vmss $curgreenvmssname and Blue load balancer $curgreenvmssname to Blue
+  az network lb update --resource-group $svcname --name $curgreenlbname --set tags.BlueGreen="'$BlueGreen'"
+  az vmss update --resource-group $svcname --name $curgreenvmssname --set tags.BlueGreen="'$BlueGreen'"
+    
+  # Attach new Green vmss to Application Gateway
+  greenIP=$blueIP
+  echo attaching new Green vmss $vmssname $greenIP to Application Gateway $svcname
+  az network application-gateway address-pool update --resource-group $svcname --gateway-name $svcname --name appGatewayBackendPool --servers $greenIP
+   
 else
-  echo "Problem with vmsscnt; value is $vmsscnt"
+  echo Problem with vmsscnt, value is $vmsscnt
 fi
-
-
-
-az network application-gateway address-pool update --resource-group reg1appgw --gateway-name reg1pubappgw --name appGatewayBackendPool --servers 10.0.1.4
-
-# Obtain Name, IP address and Resource Group of BLUE Load Balancer
-blue=($(az network lb list -o table --query "[? tags.BlueGreen == 'Blue' && tags.ServiceName == 'appwallet' && tags.Deployment == 'Prod'].{name:name, rg:resourceGroup, ip:frontendIpConfigurations[0].privateIpAddress}" -o tsv))
-bluelb=${blue[0]}
-bluerg=${blue[1]}
-blueIP=${blue[2]}
-echo LB name: $bluelb
-echo RG name: $bluerg
-echo IP addr: $blueIP
-
-# Obtain Name, IP address and Resource Group of GREEN Load Balancer
-green=$(az network application-gateway list --query "[].backendAddressPools[].backendAddresses[].ipAddress" --output tsv)
-echo $greenIP
-
-# Update application gateway to use IP address of BLUE load balancer
-# Swap BLUE and GREEN tags on load balancers
-az network application-gateway address-pool update --resource-group reg1appgw --gateway-name reg1pubappgw --name appGatewayBackendPool --servers $blueIP
-
-az network lb update
-
-green=$(az network application-gateway list --query "[].backendAddressPools[].backendAddresses[].ipAddress" --output tsv)
-echo $green
-
-act=($(az account list --query "[].{state:state}" -o tsv))
-echo $act
-echo ${#act[@]}
-
-appgwcnt=($(az network application-gateway list --query "[? name == '$svcname' && tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{name:name, rg:resourceGroup, ip:frontendIpConfigurations[0].privateIpAddress}" -o tsv ))
-
-
-az network lb list -o table --query "[? tags.BlueGreen == 'Blue' && tags.ServiceName == 'appwallet' && tags.Deployment == 'Prod' ]" --output json > output.json

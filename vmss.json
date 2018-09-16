@@ -32,6 +32,9 @@
     "subnetId": {
       "type": "string"
     },
+    "vmssname": {
+      "type": "string"
+    },
     "ServiceName": {
       "type": "string"
     },
@@ -46,23 +49,23 @@
     }
   },
   "variables": {
-    "publicIPAddressName": "[concat(parameters('ServiceName'), 'pip')]",
-    "loadBalancerName": "[concat(parameters('ServiceName'), 'lb')]",
+    "publicIPAddressName": "[concat(parameters('vmssname'), 'pip')]",
+    "loadBalancerName": "[concat(parameters('vmssname'), 'lb')]",
     "loadBalancerFrontEndName": "loadBalancerFrontEnd",
     "loadBalancerBackEndName": "loadBalancerBackEnd",
     "loadBalancerProbeName": "loadBalancerHttpProbe",
     "loadBalancerNatPoolName": "loadBalancerNatPool",
-    "iloadBalancerName": "[concat(parameters('ServiceName'), 'ilb')]",
+    "iloadBalancerName": "[concat(parameters('vmssname'), 'ilb')]",
     "ilbID": "[resourceId('Microsoft.Network/loadBalancers',variables('iloadBalancerName'))]",
     "ifrontEndIPConfigID": "[concat(variables('ilbID'),'/frontendIPConfigurations/loadBalancerFrontEnd')]",
-    "bePoolName": "[concat(parameters('ServiceName'), 'bepool')]",
+    "bePoolName": "[concat(parameters('vmssname'), 'bepool')]",
     "computeApiVersion": "2017-03-30",
     "networkApiVersion": "2017-04-01"
   },
   "resources": [
     {
       "type": "Microsoft.Compute/virtualMachineScaleSets",
-      "name": "[parameters('ServiceName')]",
+      "name": "[parameters('vmssname')]",
       "location": "[resourceGroup().location]",
       "apiVersion": "[variables('computeApiVersion')]",
       "dependsOn": [
@@ -97,7 +100,7 @@
             }
           },
           "osProfile": {
-            "computerNamePrefix": "[parameters('ServiceName')]",
+            "computerNamePrefix": "[parameters('vmssname')]",
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPassword')]"
           },
@@ -145,7 +148,7 @@
       "properties": {
         "publicIPAllocationMethod": "Dynamic",
         "dnsSettings": {
-          "domainNameLabel": "[toLower(parameters('ServiceName'))]"
+          "domainNameLabel": "[toLower(parameters('vmssname'))]"
         }
       }
     },

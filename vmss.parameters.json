@@ -14,6 +14,9 @@
 		"subnetId": {
 		  "value": "Your VnetSubnetID"
 		},
+		"vmssname": {
+		  "value": "length of 9"
+		},
 		"ServiceName": {
 		  "value": "length of 9"
 		},
