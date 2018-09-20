@@ -11,8 +11,8 @@ subnetappgw="/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/
 subnetvmss="/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/storage/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/vmss"
 
 # Resource Tags 
-Deployment="Prod"
-Version="1.0.0.1"
+Deployment="Dev"
+Version="12.0.0.1a"
 
 # Create Resource Group to contain all service components for the region, check for existence
 rgcnt=($(az group list --query "[? name == '$svcname']".{name:name} -o tsv))
