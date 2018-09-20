@@ -150,9 +150,7 @@
                 "properties": {
                   "publisher": "Microsoft.Compute",
                   "settings": {
-                    "fileUris": [
-                      "(parameters('_artifactsLocation')"
-                    ]
+                    "fileUris": "https://vmssscriptsroot.blob.core.windows.net/vmss/helloWorld.ps1?sp=r&st=2018-09-20T11:02:45Z&se=2018-09-20T19:02:45Z&spr=https&sv=2017-11-09&sig=U%2FdeiZC3%2F92eSHAI6kfhMXDtXBNePUBY0Nith6wJ6Ps%3D&sr=b"
                   },
                   "typeHandlerVersion": "1.9",
                   "autoUpgradeMinorVersion": true,
