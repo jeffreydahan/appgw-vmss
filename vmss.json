@@ -29,6 +29,12 @@
         "description": "Admin password on all VMs."
       }
     },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "artifacts location."
+      }
+    },
     "subnetId": {
       "type": "string"
     },
@@ -133,6 +139,28 @@
                       }
                     }
                   ]
+                }
+              }
+            ]
+          },
+          "extensionProfile": {
+            "extensions": [
+              {
+                "name": "customScript",
+                "properties": {
+                  "publisher": "Microsoft.Compute",
+                  "settings": {
+                    "fileUris": [
+                      "(parameters('_artifactsLocation')"
+                    ]
+                  },
+                  "typeHandlerVersion": "1.9",
+                  "autoUpgradeMinorVersion": true,
+                  "forceUpdateTag": "[parameters('Version')]",
+                  "protectedSettings": {
+                    "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File helloWorld.ps1"
+                  },
+                  "type": "CustomScriptExtension"
                 }
               }
             ]
