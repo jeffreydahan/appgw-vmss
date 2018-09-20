@@ -2,7 +2,7 @@
 
 
 # Set Service Name, Region and artifacts location for deployment
-date
+echo $(date) :: "Script Started"
 svcname="dwall"  # Prod, App Wallet
 azreg="westeurope"
 _artifactsLocation="https://vmssscriptsroot.blob.core.windows.net/vmss/helloWorld.ps1?sp=r&st=2018-09-20T11:02:45Z&se=2018-09-20T19:02:45Z&spr=https&sv=2017-11-09&sig=U%2FdeiZC3%2F92eSHAI6kfhMXDtXBNePUBY0Nith6wJ6Ps%3D&sr=b"
@@ -17,6 +17,7 @@ Deployment="Dev"
 Version="1"
 
 # Create Resource Group to contain all service components for the region, check for existence
+echo $(date) :: "Resource Group Operations Started"
 rgcnt=($(az group list --query "[? name == '$svcname']".{name:name} -o tsv))
 rgcnt=${#rgcnt[@]}
 echo $rgcnt
@@ -27,8 +28,10 @@ then
 else
   echo Resource Group present, continuing to next section
 fi
+echo $(date) :: "Resource Group Operations Ended"
 
 # Create application gateway, check for existence
+echo $(date) :: "Application Gateway Operations Started"
 appgwcnt=($(az network application-gateway list --query "[? name == '$svcname' && tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{name:name}" -o tsv ))
 appgwcnt=${#appgwcnt[@]}
 echo $appgwcnt
@@ -39,8 +42,10 @@ then
 else
   echo Application Gateway present, continuing to next section
 fi
+echo $(date) :: "Application Gateway Operations Ended"
 
 # Create vmss, check for existence
+echo $(date) :: "VMSS Operations Started"
 vmsscnt=($(az vmss list --resource-group $svcname --query "[? tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{name:name}" -o tsv))
 vmsscnt=${#vmsscnt[@]}
 echo $vmsscnt
@@ -162,3 +167,4 @@ then
 else
   echo Problem with vmsscnt, value is $vmsscnt
 fi
+echo $(date) :: "VMSS Operations Ended"
