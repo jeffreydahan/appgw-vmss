@@ -89,7 +89,7 @@ then
   
     # Set current vmss and load balancer to Blue
     curBlueGreen="Blue"
-    echo setting vmss $curvmssname and load balancer $curlbname to $curBlueGreen 
+    echo updating tags for vmss $curvmssname and load balancer $curlbname to $curBlueGreen 
     az network lb update --resource-group $svcname --name $curlbname --set tags.BlueGreen="'$curBlueGreen'"
     az vmss update --resource-group $svcname --name $curvmssname --set tags.BlueGreen="'$curBlueGreen'"
     
@@ -112,7 +112,7 @@ then
   
     # Set current vmss and load balancer to Blue
     curBlueGreen="Blue"
-    echo setting vmss $curvmssname and load balancer $curlbname to $curBlueGreen 
+    echo updating tags for vmss $curvmssname and load balancer $curlbname to $curBlueGreen 
     az network lb update --resource-group $svcname --name $curlbname --set tags.BlueGreen="'$curBlueGreen'"
     az vmss update --resource-group $svcname --name $curvmssname --set tags.BlueGreen="'$curBlueGreen'"
     
@@ -151,11 +151,11 @@ then
 
   # Swap Blue and Green Tags, update IP
   BlueGreen="Green"
-  echo setting Blue vmss $curbluevmssname and Blue load balancer $curbluevmssname to Green
+  echo updating tags for Blue vmss $curbluevmssname and Blue load balancer $curbluevmssname to Green
   az network lb update --resource-group $svcname --name $curbluelbname --set tags.BlueGreen="'$BlueGreen'"
   az vmss update --resource-group $svcname --name $curbluevmssname --set tags.BlueGreen="'$BlueGreen'"
   BlueGreen="Blue"
-  echo setting Green vmss $curgreenvmssname and Blue load balancer $curgreenvmssname to Blue
+  echo updating tags for Green vmss $curgreenvmssname and Blue load balancer $curgreenvmssname to Blue
   az network lb update --resource-group $svcname --name $curgreenlbname --set tags.BlueGreen="'$BlueGreen'"
   az vmss update --resource-group $svcname --name $curgreenvmssname --set tags.BlueGreen="'$BlueGreen'"
     
