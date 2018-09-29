@@ -17,7 +17,7 @@ subnetvmss="/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/s
 
 # Resource Tags 
 Deployment="Dev"
-Version="1.1"
+Version="1.2"
 
 # Create Resource Group to contain all service components for the region, check for existence
 echo $(date) :: "Resource Group Operations Started"
@@ -144,6 +144,7 @@ then
   
   # Redeploy Blue vmss
   BlueGreen="Blue"
+  vmssname="$curbluevmssname"
   az group deployment create --resource-group $svcname --template-file vmss.json --parameters vmss.parameters.json --parameters '{"vmssname":{"value":"'$vmssname'"}, "_artifactsLocation":{"value":"'$_artifactsLocation'"}, "_artifactsLocationsubfolder":{"value":"'$_artifactsLocationsubfolder'"}, "_artifactsLocationSasToken":{"value":"'$_artifactsLocationSasToken'"}, "customscriptname":{"value":"'$customscriptname'"}, "ServiceName":{"value":"'$svcname'"},"Deployment":{"value":"'$Deployment'"},"Version":{"value":"'$Version'"},"BlueGreen":{"value":"'$BlueGreen'"},"subnetId":{"value":"'$subnetvmss'"}}'
   blueIP=($(az network lb list -o table --query "[? tags.BlueGreen == '$BlueGreen' && tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{ip:frontendIpConfigurations[0].privateIpAddress}" -o tsv))
   echo Blue IP addr: $blueIP
