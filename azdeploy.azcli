@@ -3,9 +3,12 @@
 
 # Set Service Name, Region and artifacts location for deployment
 echo $(date) :: "Script Started"
-svcname="dwall"  # Prod, App Wallet
+svcname="gwall"  # Prod, App Wallet
 azreg="westeurope"
-_artifactsLocation="https://vmssscriptsroot.blob.core.windows.net/vmss/helloWorld.ps1?sp=r&st=2018-09-20T11:02:45Z&se=2018-09-20T19:02:45Z&spr=https&sv=2017-11-09&sig=U%2FdeiZC3%2F92eSHAI6kfhMXDtXBNePUBY0Nith6wJ6Ps%3D&sr=b"
+_artifactsLocation="https://vmssscriptsroot.blob.core.windows.net"
+_artifactsLocationsubfolder="vmss"
+_artifactsLocationSasToken="sp=r&st=2018-09-28T14:16:58Z&se=2019-07-31T22:16:58Z&spr=https&sv=2017-11-09&sig=6c1U%2B%2BI5zyohuSA61CGyjkK301cTlhPTsKQH1YEr%2FyY%3D&sr=b"
+customscriptname="helloWorld.ps1"
 
 # Network Variables (assumes vnet and subnets pre-created)
 vnet="/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/storage/providers/Microsoft.Network/virtualNetworks/vnet1/"
@@ -14,13 +17,12 @@ subnetvmss="/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/s
 
 # Resource Tags 
 Deployment="Dev"
-Version="1"
+Version="1.1"
 
 # Create Resource Group to contain all service components for the region, check for existence
 echo $(date) :: "Resource Group Operations Started"
 rgcnt=($(az group list --query "[? name == '$svcname']".{name:name} -o tsv))
 rgcnt=${#rgcnt[@]}
-echo $rgcnt
 if [ "$rgcnt" = "0" ]
 then
   echo Resource Group count is $rgcnt, proceeding with Resource Group creation
@@ -34,7 +36,6 @@ echo $(date) :: "Resource Group Operations Ended"
 echo $(date) :: "Application Gateway Operations Started"
 appgwcnt=($(az network application-gateway list --query "[? name == '$svcname' && tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{name:name}" -o tsv ))
 appgwcnt=${#appgwcnt[@]}
-echo $appgwcnt
 if [ "$appgwcnt" = "0" ]
 then
   echo Application Gateway count is $appgwcnt, proceeding with Application Gateway creation
@@ -48,8 +49,6 @@ echo $(date) :: "Application Gateway Operations Ended"
 echo $(date) :: "VMSS Operations Started"
 vmsscnt=($(az vmss list --resource-group $svcname --query "[? tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{name:name}" -o tsv))
 vmsscnt=${#vmsscnt[@]}
-echo $vmsscnt
-
 if [ "$vmsscnt" = "0" ]
 then
   echo vmsscnt is $vmsscnt, deploying 2 vmss objects
@@ -58,7 +57,7 @@ then
   vmssname="$svcname""1"
   BlueGreen="Green"
   echo building vmss $vmssname and setting to $BlueGreen 
-  az group deployment create --resource-group $svcname --template-file vmss.json --parameters vmss.parameters.json --parameters '{"vmssname":{"value":"'$vmssname'"}, "_artifactsLocation":{"value":"'$_artifactsLocation'"}, "ServiceName":{"value":"'$svcname'"},"Deployment":{"value":"'$Deployment'"},"Version":{"value":"'$Version'"},"BlueGreen":{"value":"'$BlueGreen'"},"subnetId":{"value":"'$subnetvmss'"}}'
+  az group deployment create --resource-group $svcname --template-file vmss.json --parameters vmss.parameters.json --parameters '{"vmssname":{"value":"'$vmssname'"}, "_artifactsLocation":{"value":"'$_artifactsLocation'"}, "_artifactsLocationsubfolder":{"value":"'$_artifactsLocationsubfolder'"}, "_artifactsLocationSasToken":{"value":"'$_artifactsLocationSasToken'"}, "customscriptname":{"value":"'$customscriptname'"}, "ServiceName":{"value":"'$svcname'"},"Deployment":{"value":"'$Deployment'"},"Version":{"value":"'$Version'"},"BlueGreen":{"value":"'$BlueGreen'"},"subnetId":{"value":"'$subnetvmss'"}}'
   # Obtain IP address vmss Green Load Balancer
   greenIP=($(az network lb list -o table --query "[? tags.BlueGreen == '$BlueGreen' && tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{ip:frontendIpConfigurations[0].privateIpAddress}" -o tsv))
   echo Green IP addr: $greenIP
@@ -69,7 +68,7 @@ then
   vmssname="$svcname""2"
   BlueGreen="Blue"
   echo building vmss $vmssname and setting to $BlueGreen 
-  az group deployment create --resource-group $svcname --template-file vmss.json --parameters vmss.parameters.json --parameters '{"vmssname":{"value":"'$vmssname'"}, "_artifactsLocation":{"value":"'$_artifactsLocation'"},"ServiceName":{"value":"'$svcname'"},"Deployment":{"value":"'$Deployment'"},"Version":{"value":"'$Version'"},"BlueGreen":{"value":"'$BlueGreen'"},"subnetId":{"value":"'$subnetvmss'"}}'
+  az group deployment create --resource-group $svcname --template-file vmss.json --parameters vmss.parameters.json --parameters '{"vmssname":{"value":"'$vmssname'"}, "_artifactsLocation":{"value":"'$_artifactsLocation'"}, "_artifactsLocationsubfolder":{"value":"'$_artifactsLocationsubfolder'"}, "_artifactsLocationSasToken":{"value":"'$_artifactsLocationSasToken'"}, "customscriptname":{"value":"'$customscriptname'"}, "ServiceName":{"value":"'$svcname'"},"Deployment":{"value":"'$Deployment'"},"Version":{"value":"'$Version'"},"BlueGreen":{"value":"'$BlueGreen'"},"subnetId":{"value":"'$subnetvmss'"}}'
   
 elif [ "$vmsscnt" = "1" ]
 then
@@ -86,8 +85,8 @@ then
     vmssname="$svcname""2"
     BlueGreen="Green"
     echo building vmss $vmssname and setting to $BlueGreen 
-    az group deployment create --resource-group $svcname --template-file vmss.json --parameters vmss.parameters.json --parameters '{"vmssname":{"value":"'$vmssname'"}, "_artifactsLocation":{"value":"'$_artifactsLocation'"},"ServiceName":{"value":"'$svcname'"},"Deployment":{"value":"'$Deployment'"},"Version":{"value":"'$Version'"},"BlueGreen":{"value":"'$BlueGreen'"},"subnetId":{"value":"'$subnetvmss'"}}'
-    
+    az group deployment create --resource-group $svcname --template-file vmss.json --parameters vmss.parameters.json --parameters '{"vmssname":{"value":"'$vmssname'"}, "_artifactsLocation":{"value":"'$_artifactsLocation'"}, "_artifactsLocationsubfolder":{"value":"'$_artifactsLocationsubfolder'"}, "_artifactsLocationSasToken":{"value":"'$_artifactsLocationSasToken'"}, "customscriptname":{"value":"'$customscriptname'"}, "ServiceName":{"value":"'$svcname'"},"Deployment":{"value":"'$Deployment'"},"Version":{"value":"'$Version'"},"BlueGreen":{"value":"'$BlueGreen'"},"subnetId":{"value":"'$subnetvmss'"}}'
+  
     # Set current vmss and load balancer to Blue
     curBlueGreen="Blue"
     echo setting vmss $curvmssname and load balancer $curlbname to $curBlueGreen 
@@ -109,7 +108,7 @@ then
     vmssname="$svcname""1"
     BlueGreen="Green"
     echo building vmss $vmssname and setting to $BlueGreen 
-    az group deployment create --resource-group $svcname --template-file vmss.json --parameters vmss.parameters.json --parameters '{"vmssname":{"value":"'$vmssname'"}, "_artifactsLocation":{"value":"'$_artifactsLocation'"},"ServiceName":{"value":"'$svcname'"},"Deployment":{"value":"'$Deployment'"},"Version":{"value":"'$Version'"},"BlueGreen":{"value":"'$BlueGreen'"},"subnetId":{"value":"'$subnetvmss'"}}'
+    az group deployment create --resource-group $svcname --template-file vmss.json --parameters vmss.parameters.json --parameters '{"vmssname":{"value":"'$vmssname'"}, "_artifactsLocation":{"value":"'$_artifactsLocation'"}, "_artifactsLocationsubfolder":{"value":"'$_artifactsLocationsubfolder'"}, "_artifactsLocationSasToken":{"value":"'$_artifactsLocationSasToken'"}, "customscriptname":{"value":"'$customscriptname'"}, "ServiceName":{"value":"'$svcname'"},"Deployment":{"value":"'$Deployment'"},"Version":{"value":"'$Version'"},"BlueGreen":{"value":"'$BlueGreen'"},"subnetId":{"value":"'$subnetvmss'"}}'
   
     # Set current vmss and load balancer to Blue
     curBlueGreen="Blue"
@@ -145,7 +144,7 @@ then
   
   # Redeploy Blue vmss
   BlueGreen="Blue"
-  az group deployment create --resource-group $svcname --template-file vmss.json --parameters vmss.parameters.json --parameters '{"vmssname":{"value":"'$curbluevmssname'"},"ServiceName":{"value":"'$svcname'"},"Deployment":{"value":"'$Deployment'"},"Version":{"value":"'$Version'"},"BlueGreen":{"value":"'$BlueGreen'"},"subnetId":{"value":"'$subnetvmss'"}}'
+  az group deployment create --resource-group $svcname --template-file vmss.json --parameters vmss.parameters.json --parameters '{"vmssname":{"value":"'$vmssname'"}, "_artifactsLocation":{"value":"'$_artifactsLocation'"}, "_artifactsLocationsubfolder":{"value":"'$_artifactsLocationsubfolder'"}, "_artifactsLocationSasToken":{"value":"'$_artifactsLocationSasToken'"}, "customscriptname":{"value":"'$customscriptname'"}, "ServiceName":{"value":"'$svcname'"},"Deployment":{"value":"'$Deployment'"},"Version":{"value":"'$Version'"},"BlueGreen":{"value":"'$BlueGreen'"},"subnetId":{"value":"'$subnetvmss'"}}'
   blueIP=($(az network lb list -o table --query "[? tags.BlueGreen == '$BlueGreen' && tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{ip:frontendIpConfigurations[0].privateIpAddress}" -o tsv))
   echo Blue IP addr: $blueIP
 

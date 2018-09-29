@@ -14,6 +14,15 @@
     "_artifactsLocation": {
 			"value": "none"
 		},
+		"_artifactsLocationsubfolder": {
+			"value": "none"
+		},
+		"_artifactsLocationSasToken": {
+			"value": "none"
+		},
+		"customscriptname": {
+			"value": "none"
+		},
 		"subnetId": {
 		  "value": "Your VnetSubnetID"
 		},

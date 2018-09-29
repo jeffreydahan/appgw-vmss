@@ -31,9 +31,19 @@
     },
     "_artifactsLocation": {
       "type": "string",
-      "metadata": {
-        "description": "artifacts location."
-      }
+      "defaultValue": "none"
+    },
+    "_artifactsLocationsubfolder": {
+      "type": "string",
+      "defaultValue": "none"
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "defaultValue": ""
+    },
+    "customscriptname": {
+      "type": "string",
+      "defaultValue": ""
     },
     "subnetId": {
       "type": "string"
@@ -150,14 +160,14 @@
                 "properties": {
                   "publisher": "Microsoft.Compute",
                   "settings": {
-                    "fileUris": "https://vmssscriptsroot.blob.core.windows.net/vmss/helloWorld.ps1?sp=r&st=2018-09-20T11:02:45Z&se=2018-09-20T19:02:45Z&spr=https&sv=2017-11-09&sig=U%2FdeiZC3%2F92eSHAI6kfhMXDtXBNePUBY0Nith6wJ6Ps%3D&sr=b"
+                    "fileUris": [
+                      "[concat(parameters('_artifactsLocation'), '/',parameters('_artifactsLocationsubfolder'), '/', parameters('customscriptname'), '?', parameters('_artifactsLocationSasToken'))]"
+                    ],
+                    "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', parameters('customscriptname') )]"
                   },
                   "typeHandlerVersion": "1.9",
                   "autoUpgradeMinorVersion": true,
                   "forceUpdateTag": "[parameters('Version')]",
-                  "protectedSettings": {
-                    "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File helloWorld.ps1"
-                  },
                   "type": "CustomScriptExtension"
                 }
               }

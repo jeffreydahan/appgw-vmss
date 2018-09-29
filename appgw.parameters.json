@@ -8,11 +8,20 @@
         "tier": {
             "value": "Standard"
         },
-        "skuSize": {
-            "value": "Standard_Small"
-        },
         "capacity": {
             "value": 2
+        },
+        "appgwskuName": {
+            "value": "Standard_Small"
+        },
+        "pubipskuName": {
+            "value": "Basic"
+        },
+        "publicIpZones": {
+            "value": []
+        },
+        "allocationMethod": {
+            "value": "Dynamic"
         },
         "frontEndPort": {
             "value": 80

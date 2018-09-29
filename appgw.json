@@ -8,9 +8,6 @@
         "tier": {
             "type": "string"
         },
-        "skuSize": {
-            "type": "string"
-        },
         "capacity": {
             "defaultValue": 2,
             "allowedValues": [
@@ -34,7 +31,7 @@
             "type": "string"
         },
         "enableHttp2": {
-            "type": "Bool"
+            "type": "bool"
         },
         "idleTimeoutInMinutes": {
             "type": "int"
@@ -44,24 +41,39 @@
         },
         "Deployment": {
             "type": "string"
+        },
+        "appgwskuName": {
+            "type": "string"
+        },
+        "pubipskuName": {
+            "type": "string"
+        },
+        "publicIpZones": {
+            "type": "array"
+        },
+        "allocationMethod": {
+            "type": "string"
         }
     },
     "variables": {
+        "publicIPAddressName": "[concat(parameters('ServiceName'), '-pub-ip')]",
+        "publicIPRef": "[resourceId('Microsoft.Network/publicIPAddresses/', variables('publicIpAddressName'))]",
         "applicationGatewayID": "[resourceId('Microsoft.Network/applicationGateways', parameters('ServiceName'))]"
     },
     "resources": [
         {
             "type": "Microsoft.Network/applicationGateways",
             "name": "[parameters('ServiceName')]",
-            "apiVersion": "2017-10-01",
+            "apiVersion": "2018-08-01",
             "tags": {
                 "ServiceName": "[parameters('ServiceName')]",
                 "Deployment": "[parameters('Deployment')]"
             },
             "location": "[parameters('location')]",
+            "zones": "[parameters('publicIpZones')]",
             "properties": {
                 "sku": {
-                    "name": "[parameters('skuSize')]",
+                    "name": "[parameters('appgwskuName')]",
                     "tier": "[parameters('tier')]",
                     "capacity": "[parameters('capacity')]"
                 },
@@ -79,8 +91,8 @@
                     {
                         "name": "appGatewayFrontendIP",
                         "properties": {
-                            "subnet": {
-                                "id": "[parameters('subnetID')]"
+                            "PublicIPAddress": {
+                                "id": "[variables('publicIPRef')]"
                             }
                         }
                     }
@@ -146,7 +158,23 @@
                 "enableHttp2": "[parameters('enableHttp2')]",
                 "sslCertificates": []
             },
-            "dependsOn": []
+            "dependsOn": [
+                "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIpAddressName'))]"
+            ]
+        },
+        {
+            "apiVersion": "2018-08-01",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[variables('publicIpAddressName')]",
+            "location": "[parameters('location')]",
+            "sku": {
+                "name": "[parameters('pubipskuName')]"
+            },
+            "zones": "[parameters('publicIpZones')]",
+            "properties": {
+                "publicIPAllocationMethod": "[parameters('allocationMethod')]",
+                "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]"
+            }
         }
     ]
 }
