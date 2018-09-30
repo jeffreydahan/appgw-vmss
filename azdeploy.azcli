@@ -4,7 +4,7 @@
 
 # Set Service Name, Region and artifacts location for deployment
 echo $(date) :: "Script Started"
-svcname="gwall"  # Prod, App Wallet
+svcname="pwall"  # Prod, App Wallet
 azreg="westeurope"
 _artifactsLocation="https://vmssscriptsroot.blob.core.windows.net"
 _artifactsLocationsubfolder="vmss"
@@ -33,6 +33,22 @@ else
 fi
 echo $(date) :: "Resource Group Operations Ended"
 
+# Create Traffic Manager Profile, check for existence
+echo $(date) :: "Traffic Manager Profile Operations Started"
+tmname="$svcname""-tm"
+tmrelname=$tmname
+tmcnt=($(az network traffic-manager profile list --query "[? name == '$tmname' && tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{name:name}" -o tsv ))
+tmcnt=${#tmcnt[@]}
+if [ "$tmcnt" = "0" ]
+then
+  echo Traffic Manager Profile count is $appgwcnt, proceeding with Traffic Manager Endpoint creation
+  az group deployment create --resource-group $svcname --template-file tm.json --parameters tm.parameters.json --parameters '{"name":{"value":"'$tmname'"}, "relativeName":{"value":"'$tmrelname'"}, "ServiceName":{"value":"'$svcname'"}, "Deployment":{"value":"'$Deployment'"}}'
+else
+  echo Traffic Manager Profile present, continuing to next section
+fi
+echo $(date) :: "Traffic Manager Profile Operations Ended"
+
+
 # Create application gateway, check for existence
 echo $(date) :: "Application Gateway Operations Started"
 appgwcnt=($(az network application-gateway list --query "[? name == '$svcname' && tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{name:name}" -o tsv ))
@@ -41,6 +57,7 @@ if [ "$appgwcnt" = "0" ]
 then
   echo Application Gateway count is $appgwcnt, proceeding with Application Gateway creation
   az group deployment create --resource-group $svcname --template-file appgw.json --parameters appgw.parameters.json --parameters '{"location":{"value":"'$azreg'"}, "subnetID":{"value":"'$subnetappgw'"}, "ServiceName":{"value":"'$svcname'"}, "Deployment":{"value":"'$Deployment'"}}'
+  echo attaching application gateway to traffic manager
 else
   echo Application Gateway present, continuing to next section
 fi
