@@ -60,8 +60,8 @@ then
   appgwpubipname="$svcname""-pub-ip"
   az group deployment create --resource-group $svcname --template-file appgw.json --parameters appgw.parameters.json --parameters '{"location":{"value":"'$azreg'"}, "subnetID":{"value":"'$subnetappgw'"}, "appgwpubipname":{"value":"'$appgwpubipname'"}, "ServiceName":{"value":"'$svcname'"}, "Deployment":{"value":"'$Deployment'"}}'
   echo attaching application gateway to traffic manager
-  appgwpubipid=$(az network public-ip show --resource-group $azreg --name $appgwpubipname -o tsv --query "{id:id}")
-  az network traffic-manager endpoint create --resource-group $azreg --profile-name $tmname --name $tmendpointname --type azureEndpoints --target-resource-id $appgwpubipid --weight 1 --endpoint-status Enabled
+  appgwpubipid=$(az network public-ip show --resource-group $svcname --name $appgwpubipname -o tsv --query "{id:id}")
+  az network traffic-manager endpoint create --resource-group $svcname --profile-name $tmname --name $tmendpointname --type azureEndpoints --target-resource-id $appgwpubipid --weight 1 --endpoint-status Enabled
 else
   echo Application Gateway present, continuing to next section
 fi
