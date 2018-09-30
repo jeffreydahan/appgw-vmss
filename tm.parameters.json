@@ -9,7 +9,7 @@
             "value": "gwalltm"
         },
         "trafficRoutingMethod": {
-            "value": "Geographic"
+            "value": "Weighted"
         },
         "maxReturn": {
             "value": 0

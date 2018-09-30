@@ -20,6 +20,9 @@
         "publicIpZones": {
             "value": []
         },
+        "appgwpubipname": {
+            "value": "none"
+        },
         "allocationMethod": {
             "value": "Dynamic"
         },

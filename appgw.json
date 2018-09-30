@@ -51,12 +51,15 @@
         "publicIpZones": {
             "type": "array"
         },
+        "appgwpubipname": {
+            "type": "string"
+        },
         "allocationMethod": {
             "type": "string"
         }
     },
     "variables": {
-        "publicIPAddressName": "[concat(parameters('ServiceName'), '-pub-ip')]",
+        "publicIPAddressName": "[parameters('appgwpubipname')]",
         "publicIPRef": "[resourceId('Microsoft.Network/publicIPAddresses/', variables('publicIpAddressName'))]",
         "applicationGatewayID": "[resourceId('Microsoft.Network/applicationGateways', parameters('ServiceName'))]"
     },

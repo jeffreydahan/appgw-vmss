@@ -17,7 +17,7 @@ subnetappgw="/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/
 subnetvmss="/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/storage/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/vmss"
 
 # Resource Tags 
-Deployment="Dev"
+Deployment="Prod"
 Version="1.2"
 
 # Create Resource Group to contain all service components for the region, check for existence
@@ -37,11 +37,12 @@ echo $(date) :: "Resource Group Operations Ended"
 echo $(date) :: "Traffic Manager Profile Operations Started"
 tmname="$svcname""-tm"
 tmrelname=$tmname
+tmendpointname="$svcname""-""$azreg"
 tmcnt=($(az network traffic-manager profile list --query "[? name == '$tmname' && tags.ServiceName == '$svcname' && tags.Deployment == '$Deployment'].{name:name}" -o tsv ))
 tmcnt=${#tmcnt[@]}
 if [ "$tmcnt" = "0" ]
 then
-  echo Traffic Manager Profile count is $appgwcnt, proceeding with Traffic Manager Endpoint creation
+  echo Traffic Manager Profile count is $tmcnt, proceeding with Traffic Manager Profile creation
   az group deployment create --resource-group $svcname --template-file tm.json --parameters tm.parameters.json --parameters '{"name":{"value":"'$tmname'"}, "relativeName":{"value":"'$tmrelname'"}, "ServiceName":{"value":"'$svcname'"}, "Deployment":{"value":"'$Deployment'"}}'
 else
   echo Traffic Manager Profile present, continuing to next section
@@ -56,8 +57,11 @@ appgwcnt=${#appgwcnt[@]}
 if [ "$appgwcnt" = "0" ]
 then
   echo Application Gateway count is $appgwcnt, proceeding with Application Gateway creation
-  az group deployment create --resource-group $svcname --template-file appgw.json --parameters appgw.parameters.json --parameters '{"location":{"value":"'$azreg'"}, "subnetID":{"value":"'$subnetappgw'"}, "ServiceName":{"value":"'$svcname'"}, "Deployment":{"value":"'$Deployment'"}}'
+  appgwpubipname="$svcname""-pub-ip"
+  az group deployment create --resource-group $svcname --template-file appgw.json --parameters appgw.parameters.json --parameters '{"location":{"value":"'$azreg'"}, "subnetID":{"value":"'$subnetappgw'"}, "appgwpubipname":{"value":"'$appgwpubipname'"}, "ServiceName":{"value":"'$svcname'"}, "Deployment":{"value":"'$Deployment'"}}'
   echo attaching application gateway to traffic manager
+  appgwpubipid=$(az network public-ip show --resource-group $azreg --name $appgwpubipname -o tsv --query "{id:id}")
+  az network traffic-manager endpoint create --resource-group $azreg --profile-name $tmname --name $tmendpointname --type azureEndpoints --target-resource-id $appgwpubipid --weight 1 --endpoint-status Enabled
 else
   echo Application Gateway present, continuing to next section
 fi
