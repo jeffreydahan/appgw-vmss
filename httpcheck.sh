@@ -2,6 +2,6 @@
 
 while :
 do
-    echo "$(date) :: $(curl -L http://globaltmtest.trafficmanager.net/ --silent)"
+    echo "$(date) :: $(curl -L http://pwall-tm.trafficmanager.net/ --silent)"
     sleep 1
 done
