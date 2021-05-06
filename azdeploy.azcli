@@ -8,13 +8,13 @@ svcname="pwall"  # Prod, App Wallet
 azreg="westeurope"
 _artifactsLocation="https://vmssscriptsroot.blob.core.windows.net"
 _artifactsLocationsubfolder="vmss"
-_artifactsLocationSasToken="sp=r&st=2018-09-28T14:16:58Z&se=2019-07-31T22:16:58Z&spr=https&sv=2017-11-09&sig=6c1U%2B%2BI5zyohuSA61CGyjkK301cTlhPTsKQH1YEr%2FyY%3D&sr=b"
+_artifactsLocationSasToken="sp=r&st=2018-09-28T14:16:58Z&se=2019-07-31T22:16:58Z&spr=https&sv=2017-11-09&sig=xxxxx=b"
 customscriptname="helloWorld.ps1"
 
 # Network Variables (assumes vnet and subnets pre-created)
-vnet="/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/storage/providers/Microsoft.Network/virtualNetworks/vnet1/"
-subnetappgw="/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/storage/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/appgw"
-subnetvmss="/subscriptions/9a076c3b-efe6-41fc-8586-f2143f2ad975/resourceGroups/storage/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/vmss"
+vnet="/subscriptions/xxxx/resourceGroups/storage/providers/Microsoft.Network/virtualNetworks/vnet1/"
+subnetappgw="/subscriptions/xxxx/resourceGroups/storage/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/appgw"
+subnetvmss="/subscriptions/xxxx/resourceGroups/storage/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/vmss"
 
 # Resource Tags 
 Deployment="Prod"
